@@ -10,15 +10,17 @@ class HBNBCommand(cmd.Cmd):
     """
     HBNBCommand console class
     """
-    prompt = "(hbnb)"
+    prompt = '(hbnb) '
+
+    def emptyline(self):
+        """
+        Do nothing when an empty line is entered.
+        """
+        pass
 
     def do_quit(self, args):
-        """exit the program"""
+        """Quit command to exit the program"""
         return True
-
-    def help_quit(self, args):
-        """documented line to help understand quit command"""
-        print("Quit command to exit the program")
 
     def do_EOF(self, args):
         """exit the program"""
