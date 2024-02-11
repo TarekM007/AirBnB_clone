@@ -8,14 +8,25 @@ for other classes
 import uuid
 from datetime import datetime
 
+
 class BaseModel:
     """Base class for all models"""
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initialization of a Base instance."""
-        self.id = str(uuid.uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+        dtime_format = '%Y-%m-%dT%H:%M:%S.%f'
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "__class__":
+                    continue
+                elif key == "created_at" or key == "updated_at":
+                    setattr(self, key, datetime.strptime(value, dtime_format))
+                else:
+                    setattr(self, key, value)
+        else:
+            self.id = str(uuid.uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
 
     def save(self):
         """Updates the public instance attribute updated_at
