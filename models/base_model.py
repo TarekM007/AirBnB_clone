@@ -1,74 +1,64 @@
-#!/usr/bin/python3
-"""Defines all common attributes/methods for other classes
+#!/usr/bin/env python3
+
 """
-import uuid
+BaseModel class that defines all common attributes/methods
+for other classes
+
+"""
+
 from datetime import datetime
-import models
+from models import storage
+from uuid import uuid4
 
 
 class BaseModel:
-    """Base class for all models"""
+
+    """ BaseModel Class definition """
 
     def __init__(self, *args, **kwargs):
-        """Initialization of a Base instance.
-        Args:
-            - *args: list of arguments
-            - **kwargs: dict of key-values arguments
-        """
-        if kwargs:
-            dtime_format = '%Y-%m-%dT%H:%M:%S.%f'
-            for key, value in kwargs.items():
-                if key == '__class__':
-                    continue
-                elif key == 'created_at':
-                    self.created_at = datetime.strptime(
-                        kwargs['created_at'], dtime_format)
-                elif key == 'updated_at':
-                    self.updated_at = datetime.strptime(
-                        kwargs['updated_at'], dtime_format)
-                else:
-                    setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
+        """ Constructor """
+
+        for key, value in kwargs.items():
+            if key == "__class__":
+                continue
+
+            if (key == "created_at" or key == "updated_at"):
+                value = datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
+
+            setattr(self, key, value)
+
+        if "id" not in kwargs.keys():
+            self.id = str(uuid4())
+
+        if "created_at" not in kwargs.keys():
             self.created_at = datetime.now()
+
+        if "updated_at" not in kwargs.keys():
             self.updated_at = datetime.now()
-            models.storage.new(self)  # as instructed also in task 5
+
+        if len(kwargs) == 0:
+            storage.new(self)
 
     def __str__(self):
-        """Returns a readable string representation
-        of BaseModel instances"""
-
-        clsName = self.__class__.__name__
-        return "[{}] ({}) {}".format(clsName, self.id, self.__dict__)
+        """ Defines what should be printed for each instance of the class """
+        st = "[{:s}] ({:s}) {:s}"
+        st = st.format(self.__class__.__name__, self.id, str(self.__dict__))
+        return st
 
     def save(self):
-        """Updates the public instance attribute updated_at
-        with the current datetime"""
-
+        """
+        Update the Public Instance Attr updated_at with the current datetime
+        """
         self.updated_at = datetime.now()
-        models.storage.save()
+        storage.save()
 
     def to_dict(self):
-        """Returns a dictionary that contains all
-        keys/values of the instance"""
-        my_dict = self.__dict__.copy()
-        my_dict['updated_at'] = self.updated_at.isoformat()
-        my_dict['created_at'] = self.created_at.isoformat()
-        my_dict['__class__'] = self.__class__.__name__
-        # OR
-        # my_dict = dict()
-        # my_dict['__class__'] = self.__class__.__name__
-        # for key, value in self.__dict__.items():
-        #    if key in ('created_at', 'updated_at'):
-        #        my_dict[key] = value.isoformat()
-        #    else:
-        #        my_dict[key] = value
-        return my_dict
-        # my_dict = dict()
-        # my_dict['__class__'] = self.__class__.__name__
-        # for key, value in self.__dict__.items():
-        #    if type(value) is datetime:
-        #        my_dict[key] = value.isoformat()
-        #    else:
-        #        my_dict[key] = value
-        # return my_dict
+        """
+        returns a dictionary containing all keys/values of __dict__
+        of the instance
+        """
+        dcopy = self.__dict__.copy()
+        dcopy["__class__"] = self.__class__.__name__
+        dcopy["created_at"] = self.created_at.isoformat()
+        dcopy["updated_at"] = self.updated_at.isoformat()
+        return dcopy
