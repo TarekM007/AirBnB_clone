@@ -16,6 +16,9 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """Initialization of a Base instance."""
         dtime_format = '%Y-%m-%dT%H:%M:%S.%f'
+        self.id = str(uuid.uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
         if kwargs:
             for key, value in kwargs.items():
                 if key == "__class__":
@@ -24,10 +27,6 @@ class BaseModel:
                     setattr(self, key, datetime.strptime(value, dtime_format))
                 else:
                     setattr(self, key, value)
-        else:
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
 
         models.storage.new(self)
 

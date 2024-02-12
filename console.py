@@ -6,6 +6,7 @@ Module for console
 import cmd
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
 
 class HBNBCommand(cmd.Cmd):
@@ -13,7 +14,7 @@ class HBNBCommand(cmd.Cmd):
     HBNBCommand console class
     """
     prompt = '(hbnb) '
-    valid_class = ["BaseModel"]
+    valid_class = ["BaseModel", "User"]
 
     def emptyline(self):
         """
@@ -39,8 +40,8 @@ class HBNBCommand(cmd.Cmd):
         elif command[0] not in self.valid_class:
             print("** class doesn't exist **")
         else:
-            new_instance = BaseModel()
-            new_instance.save()
+            new_instance = eval(f"{commands[0]}()")
+            storage.save()
             print(new_instance.id)
 
     def do_show(self, args):
