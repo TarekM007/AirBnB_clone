@@ -19,7 +19,8 @@ class HBNBCommand(cmd.Cmd):
     HBNBCommand console class
     """
     prompt = '(hbnb) '
-    valid_class = ["BaseModel", "User"]
+    valid_class = ["BaseModel", "User", "Amenity",
+                     "Place", "Review", "State", "City"]
 
     def emptyline(self):
         """
@@ -102,6 +103,68 @@ class HBNBCommand(cmd.Cmd):
             for key, value in objects.items():
                 if key.split('.')[0] == command[0]:
                     print(str(value))
+
+    def default(self, args):
+        """Default behavior for cmd module when input is invalid"""
+        arg_list = args.split('.')
+
+        cls_num = arg_list[0]
+
+        command = arg_list[1].split('(')
+
+        cmd_method = command[0]
+
+        e_args = command[1].split(')')[0]
+
+        method_dict = {
+                'all': self.do_all,
+                'show': self.do_show,
+                'destroy': self.do_destroy,
+                'update': self.do_update,
+                'count': self.do_count
+                }
+
+        if cmd_method in method_dict.keys():
+            if cmd_method != "update":
+                return method_dict[cmd_method]("{} {}".format(cls_num, e_args))
+            else:
+                if not cls_num:
+                    print("** class name missing **")
+                    return
+                try:
+                    obj_id, arg_dict = split_curly_braces(e_args)
+                except Exception:
+                    pass
+                try:
+                    call = method_dict[cmd_method]
+                    return call("{} {} {}".format(cls_num, obj_id, arg_dict))
+                except Exception:
+                    pass
+        else:
+            print("*** Unknown syntax: {}".format(args))
+            return False
+
+    def do_count(self, args):
+        """Counts and retrieves the number of instances of a class"""
+        objects = storage.all()
+
+        command = args.split()
+
+        if args:
+            cls_num = command[0]
+
+        count = 0
+
+        if command:
+            if cls_num in self.valid_class:
+                for obj in objects.values():
+                    if obj.__class__.__name__ == cls_num:
+                        count += 1
+                print(count)
+            else:
+                print("** invalid class name **")
+        else:
+            print("** class name missing **")
 
     def do_update(self, args):
         """Update a class instance of a given id by adding or updating
