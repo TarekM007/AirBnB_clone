@@ -203,70 +203,33 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class name missing **")
 
-
     def do_update(self, args):
+        """Update a class instance of a given id by adding or updating
+        a given attribute key/value pair or dictionary.
         """
-        Update an instance by adding or updating an attribute.
-        Usage: update <class_name> <id> <attribute_name> "<attribute_value>"
-        """
-        commands = args.split()
-
-        if len(commands) == 0:
+        command = args.split()
+        if len(command) < 1:
             print("** class name missing **")
-        elif commands[0] not in self.valid_classes:
+            return
+        elif command[0] not in self.valid_class:
             print("** class doesn't exist **")
-        elif len(commands) < 2:
+            return
+        elif len(command) < 2:
             print("** instance id missing **")
+            return
         else:
-            objects = storage.all()
-
-            key = "{}.{}".format(commands[0], commands[1])
-            if key not in objects:
+            new_str = f"{command[0]}.{command[1]}"
+            if new_str not in storage.all().keys():
                 print("** no instance found **")
-            elif len(commands) < 3:
+            elif len(command) < 3:
                 print("** attribute name missing **")
-            elif len(commands) < 4:
+                return
+            elif len(command) < 4:
                 print("** value missing **")
+                return
             else:
-                obj = objects[key]
-                curly_braces = re.search(r"\{(.*?)\}", args)
-
-                if curly_braces:
-                    try:
-                        str_data = curly_braces.group(1)
-
-                        arg_dict = ast.literal_eval("{" + str_data + "}")
-
-                        attribute_names = list(arg_dict.keys())
-                        attribute_values = list(arg_dict.values())
-                        try:
-                            attr_name1 = attribute_names[0]
-                            attr_value1 = attribute_values[0]
-                            setattr(obj, attr_name1, attr_value1)
-                        except Exception:
-                            pass
-                        try:
-                            attr_name2 = attribute_names[1]
-                            attr_value2 = attribute_values[1]
-                            setattr(obj, attr_name2, attr_value2)
-                        except Exception:
-                            pass
-                    except Exception:
-                        pass
-                else:
-
-                    attr_name = commands[2]
-                    attr_value = commands[3]
-
-                    try:
-                        attr_value = eval(attr_value)
-                    except Exception:
-                        pass
-                    setattr(obj, attr_name, attr_value)
-
-                obj.save()
-
-
+                setattr(storage.all()[new_str], command[2], command[3])
+                storage.save()
 
 
 if __name__ == '__main__':
