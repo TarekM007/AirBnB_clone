@@ -46,7 +46,7 @@ class TestBasemodel(unittest.TestCase):
         self.assertEqual(my_model_dict["__class__"], 'BaseModel')
         self.assertEqual(my_model_dict['id'], my_model.id)
         self.assertEqual(my_model_dict['created_at'], my_model.created_at.isoformat())
-        self.assertEqual(my_model_dict["updated_at"], my_model.created_at.isoformat())
+        self.assertEqual(my_model_dict['updated_at'], my_model.created_at.isoformat())
 
 
     def test_str(self):
