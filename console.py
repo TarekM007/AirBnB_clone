@@ -57,7 +57,7 @@ class HBNBCommand(cmd.Cmd):
     """
     prompt = '(hbnb) '
     valid_class = ["BaseModel", "User", "Amenity",
-                     "Place", "Review", "State", "City"]
+                   "Place", "Review", "State", "City"]
 
     def emptyline(self):
         """

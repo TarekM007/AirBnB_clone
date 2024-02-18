@@ -30,13 +30,11 @@ class FileStorage:
 
         FileStorage.__objects[key] = obj
 
-
     def all(self):
         """
         returns the dictionary __objects
         """
-        return  FileStorage.__objects
-
+        return FileStorage.__objects
 
     def save(self):
         """
