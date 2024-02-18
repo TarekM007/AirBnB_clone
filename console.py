@@ -209,7 +209,7 @@ class HBNBCommand(cmd.Cmd):
         Update an instance by adding or updating an attribute.
         Usage: update <class_name> <id> <attribute_name> "<attribute_value>"
         """
-        commands = shlex.split(arg)
+        commands = args.split()
 
         if len(commands) == 0:
             print("** class name missing **")
