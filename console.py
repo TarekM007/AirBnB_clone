@@ -4,6 +4,9 @@ Module for console
 """
 
 import cmd
+import re
+import shlex
+import ast
 from models import storage
 from models.base_model import BaseModel
 from models.user import User
