@@ -204,58 +204,59 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
 
 
-    def do_update(self, args):
+    def do_update(self, arg):
         """
         Update an instance by adding or updating an attribute.
+        Usage: update <class_name> <id> <attribute_name> "<attribute_value>"
         """
-        command = args.split()
+        commands = shlex.split(arg)
 
-        if len(command) == 0:
+        if len(commands) == 0:
             print("** class name missing **")
-        elif command[0] not in self.valid_class:
+        elif commands[0] not in self.valid_classes:
             print("** class doesn't exist **")
-        elif len(command) < 2:
+        elif len(commands) < 2:
             print("** instance id missing **")
         else:
             objects = storage.all()
 
-            key = "{}.{}".format(command[0], command[1])
+            key = "{}.{}".format(commands[0], commands[1])
             if key not in objects:
                 print("** no instance found **")
-            elif len(command) < 3:
+            elif len(commands) < 3:
                 print("** attribute name missing **")
-            elif len(command) < 4:
+            elif len(commands) < 4:
                 print("** value missing **")
             else:
                 obj = objects[key]
-                curly_braces = re.search(r"\{?(.)*\}", args)
+                curly_braces = re.search(r"\{(.*?)\}", arg)
 
                 if curly_braces:
                     try:
                         str_data = curly_braces.group(1)
 
-                        args_dict = ast.literal_eval("{" + str_data + "}")
+                        arg_dict = ast.literal_eval("{" + str_data + "}")
 
-                        attr_names = list(args_dict.keys())
-                        attr_values = list(args_dict.values())
+                        attribute_names = list(arg_dict.keys())
+                        attribute_values = list(arg_dict.values())
                         try:
-                            attr_name_1 = attr_names[0]
-                            attr_value_1 = attr_values[0]
-                            setattr(obj, attr_name_1, attr_value_1)
+                            attr_name1 = attribute_names[0]
+                            attr_value1 = attribute_values[0]
+                            setattr(obj, attr_name1, attr_value1)
                         except Exception:
                             pass
                         try:
-                            attr_name_2 = attr_names[1]
-                            attr_value_2 = attr_values[1]
-                            setattr(obj, attr_name_2, attr_value_2)
+                            attr_name2 = attribute_names[1]
+                            attr_value2 = attribute_values[1]
+                            setattr(obj, attr_name2, attr_value2)
                         except Exception:
                             pass
                     except Exception:
                         pass
                 else:
 
-                    attr_name = command[2]
-                    attr_value = command[3]
+                    attr_name = commands[2]
+                    attr_value = commands[3]
 
                     try:
                         attr_value = eval(attr_value)
@@ -264,6 +265,7 @@ class HBNBCommand(cmd.Cmd):
                     setattr(obj, attr_name, attr_value)
 
                 obj.save()
+
 
 
 
