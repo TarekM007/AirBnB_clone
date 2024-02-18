@@ -43,7 +43,7 @@ class TestUser_instantiation(unittest.TestCase):
         self.assertEqual(str, type(User().id))
 
     def test_has_attributes(self):
-        u = user()
+        u = User()
         self.assertTrue('id' in self.u.__dict__)
         self.assertTrue('created_at' in self.u.__dict__)
         self.assertTrue('updated_at' in self.u.__dict__)
@@ -53,7 +53,7 @@ class TestUser_instantiation(unittest.TestCase):
         self.assertTrue('last_name' in self.u.__dict__)
 
     def test_attributes_are_string(self):
-        u = user()
+        u = User()
         self.assertIs(type(self.u.email), str)
         self.assertIs(type(self.u.password), str)
         self.assertIs(type(self.u.first_name), str)
@@ -105,7 +105,7 @@ class TestUser_instantiation(unittest.TestCase):
         self.assertIsNotNone(User.__doc__)
 
     def test_save(self):
-        u = user()
+        u = User()
         self.u.save()
         self.assertNotEqual(self.u.created_at, self.u.updated_at)
 
