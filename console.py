@@ -5,7 +5,6 @@ Module for console
 
 import cmd
 import re
-import shlex
 import ast
 from models import storage
 from models.base_model import BaseModel
@@ -204,33 +203,68 @@ class HBNBCommand(cmd.Cmd):
         else:
             print("** class name missing **")
 
+
     def do_update(self, args):
-        """Update a class instance of a given id by adding or updating
-        a given attribute key/value pair or dictionary.
+        """
+        Update an instance by adding or updating an attribute.
         """
         command = args.split()
-        if len(command) < 1:
+
+        if len(command) == 0:
             print("** class name missing **")
-            return
         elif command[0] not in self.valid_class:
             print("** class doesn't exist **")
-            return
         elif len(command) < 2:
             print("** instance id missing **")
-            return
         else:
-            new_str = f"{command[0]}.{command[1]}"
-            if new_str not in storage.all().keys():
+            objects = storage.all()
+
+            key = "{}.{}".format(command[0], command[1])
+            if key not in objects:
                 print("** no instance found **")
             elif len(command) < 3:
                 print("** attribute name missing **")
-                return
             elif len(command) < 4:
                 print("** value missing **")
-                return
             else:
-                setattr(storage.all()[new_str], command[2], command[3])
-                storage.save()
+                obj = objects[key]
+                curly_braces = re.search(r"\{?(.)*\}", args)
+
+                if curly_braces:
+                    try:
+                        str_data = curly_braces.group(1)
+
+                        args_dict = ast.literal_eval("{" + str_data + "}")
+
+                        attr_names = list(args_dict.keys())
+                        attr_values = list(args_dict.values())
+                        try:
+                            attr_name_1 = attr_names[0]
+                            attr_value_1 = attr_values[0]
+                            setattr(obj, attr_name_1, attr_value_1)
+                        except Exception:
+                            pass
+                        try:
+                            attr_name_2 = attr_names[1]
+                            attr_value_2 = attr_values[1]
+                            setattr(obj, attr_name_2, attr_value_2)
+                        except Exception:
+                            pass
+                    except Exception:
+                        pass
+                else:
+
+                    attr_name = command[2]
+                    attr_value = command[3]
+
+                    try:
+                        attr_value = eval(attr_value)
+                    except Exception:
+                        pass
+                    setattr(obj, attr_name, attr_value)
+
+                obj.save()
+
 
 
 if __name__ == '__main__':
