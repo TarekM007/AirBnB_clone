@@ -96,7 +96,7 @@ class TestReview_instantiation(unittest.TestCase):
         my_date_repr = repr(my_date)
         Rv = Review()
         Rv.id = "333444"
-        Rv.created_at = Rv.updated_at = my_datee
+        Rv.created_at = Rv.updated_at = my_date
         rv_str = Rv.__str__()
         self.assertIn("[Review] (333444)", rv_str)
         self.assertIn("'id': '333444'", rv_str)
@@ -109,7 +109,7 @@ class TestReview_instantiation(unittest.TestCase):
 
     def test_instantiation_with_kwargs(self):
         my_date = datetime.today()
-        date_iso = dt.isoformat()
+        date_iso = my_date.isoformat()
         Rv = Review(id="444", created_at=date_iso, updated_at=date_iso)
         self.assertEqual(Rv.id, "444")
         self.assertEqual(Rv.created_at, my_date)
