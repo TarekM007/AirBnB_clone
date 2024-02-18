@@ -14,6 +14,41 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+def split_func(e_args):
+    """
+    a function that splits curly braces for the update method
+    """
+    curly_braces = re.search(r"\{(.)\*?}", e_args)
+
+    if curly_braces:
+        id_comma = (e_args[:curly_braces.span()[0]]).split()
+        id = [i.strip(",") for i in id_comma][0]
+
+        str_data = curly_braces.group(1)
+        try:
+            args_dict = ast.literal_eval("{" + str_data + "}")
+        except Exception:
+            print("**  invalid dictionary format **")
+            return
+        return id, args_dict
+    else:
+        command = e_args.split(",")
+        if command:
+            try:
+                id = command[0]
+            except Exception:
+                return "", ""
+            try:
+                attr_name = command[1]
+            except Exception:
+                return id, ""
+            try:
+                attr_value = command[2]
+            except Exception:
+                return id, attr_name
+            return f"{id}", f"{attr_name} {attr_value}"
+
+
 class HBNBCommand(cmd.Cmd):
     """
     HBNBCommand console class
@@ -132,7 +167,7 @@ class HBNBCommand(cmd.Cmd):
                     print("** class name missing **")
                     return
                 try:
-                    obj_id, arg_dict = split_curly_braces(e_args)
+                    obj_id, arg_dict = split_func(e_args)
                 except Exception:
                     pass
                 try:
