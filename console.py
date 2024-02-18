@@ -204,7 +204,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
 
 
-    def do_update(self, arg):
+    def do_update(self, args):
         """
         Update an instance by adding or updating an attribute.
         Usage: update <class_name> <id> <attribute_name> "<attribute_value>"
