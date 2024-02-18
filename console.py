@@ -229,7 +229,7 @@ class HBNBCommand(cmd.Cmd):
                 print("** value missing **")
             else:
                 obj = objects[key]
-                curly_braces = re.search(r"\{(.*?)\}", arg)
+                curly_braces = re.search(r"\{(.*?)\}", args)
 
                 if curly_braces:
                     try:
